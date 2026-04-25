@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>เข้าสู่ระบบ - Pawney</title>
+    <style>
+        :root {
+            --pawney-brown: #795035;
+            --pawney-blue: #4FA8D6;
+            --pawney-orange: #E89B53;
+            --pawney-yellow: #F7CB53;
+            --bg-color: #FEF9F1;
+            --card-bg: #FFFFFF;
+            --text-main: #5C3D26;
+            --text-muted: #9E7D65;
+            --border-color: #F0E4D8;
+        }
+        * { box-sizing: border-box; font-family: 'Prompt', sans-serif; }
+        body { 
+            background-color: var(--bg-color); margin: 0; padding: 0;
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; padding: 16px;
+        }
+        .login-card {
+            background: var(--card-bg); border-radius: 20px; padding: 30px;
+            width: 100%; max-width: 400px; display: flex; flex-direction: column;
+            align-items: center; box-shadow: 0 4px 12px rgba(121, 80, 53, 0.08);
+            border: 2px solid #FFF;
+        }
+        .logo-container {
+            width: 100px; height: 100px; border-radius: 50%;
+            background-color: var(--border-color); margin-bottom: 20px; overflow: hidden;
+            border: 4px solid var(--pawney-yellow); display: flex; justify-content: center; align-items: center;
+        }
+        .logo-container img { width: 100%; height: 100%; object-fit: cover; }
+        .login-card h2 { margin: 0 0 24px 0; font-size: 24px; color: var(--pawney-brown); text-align: center;}
+        .input-group { width: 100%; margin-bottom: 16px; text-align: left; }
+        .input-group label { display: block; font-size: 14px; color: var(--text-main); margin-bottom: 6px; font-weight: 600; }
+        .input-group input {
+            width: 100%; padding: 14px; border-radius: 12px; border: 1px solid var(--border-color);
+            font-size: 14px; color: var(--pawney-blue); font-weight: 600;
+            background-color: #F8FAFC; transition: 0.2s;
+        }
+        .input-group input:focus {
+            outline: none; border-color: var(--pawney-blue);
+            box-shadow: 0 0 0 3px rgba(79, 168, 214, 0.1); background-color: #FFF; color: var(--text-main);
+        }
+        .remember-forgot {
+            width: 100%; display: flex; justify-content: space-between; align-items: center;
+            font-size: 13px; color: var(--text-muted); margin-bottom: 24px;
+        }
+        .remember-forgot div { display: flex; align-items: center; }
+        .remember-forgot input[type="checkbox"] { margin-right: 6px; width: 16px; height: 16px; accent-color: var(--pawney-blue); }
+        .remember-forgot a { color: var(--pawney-blue); text-decoration: none; }
+        .remember-forgot a:hover { text-decoration: underline; }
+        .btn {
+            width: 100%; padding: 14px; border-radius: 14px; border: none;
+            font-size: 16px; font-weight: 600; cursor: pointer; text-align: center;
+            transition: 0.2s; margin-bottom: 12px;
+        }
+        .btn-primary { background: var(--pawney-brown); color: white; }
+        .btn-primary:active { background: #5C3D26; transform: translateY(2px); }
+        .btn-secondary { background: #FFF; color: var(--pawney-brown); border: 2px solid var(--border-color); }
+        .btn-secondary:active { background: var(--bg-color); transform: translateY(2px); }
+        .separator {
+            width: 100%; text-align: center; margin: 16px 0; font-size: 13px; color: var(--text-muted); position: relative;
+        }
+        .separator:before {
+            content: ""; display: block; width: 100%; height: 1px;
+            background: var(--border-color); position: absolute; top: 50%; left: 0; z-index: 1;
+        }
+        .separator span { background-color: var(--card-bg); padding: 0 10px; position: relative; z-index: 2; }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="login-card">
+    <div class="logo-container">
+        <img src="pawneylogo.png" alt="Pawney Logo">
+    </div>
+    
+    <h2>เข้าสู่ระบบ - Pawney</h2>
+    
+    <div class="input-group">
+        <label>อีเมลผู้ใช้งาน</label>
+        <input type="text" value="pawney_user@example.com" placeholder="ระบุอีเมล">
+    </div>
+    <div class="input-group">
+        <label>รหัสผ่าน</label>
+        <input type="password" value="pawney123" placeholder="ระบุรหัสผ่าน">
+    </div>
+
+    <div class="remember-forgot">
+        <div>
+            <input type="checkbox" id="rememberMe" checked>
+            <label for="rememberMe">จำฉันไว้</label>
+        </div>
+        <a href="#">ลืมรหัสผ่าน?</a>
+    </div>
+
+    <button class="btn btn-primary" onclick="window.location.href='community.html'">เข้าสู่ระบบ</button>
+    
+    <div class="separator"><span>หรือ</span></div>
+
+    <button class="btn btn-secondary" onclick="window.location.href='community.html'">สมัครสมาชิกใหม่</button>
+</div>
+
+</body>
+</html>

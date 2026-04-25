@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Community - Pawney</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #5D4037; 
+            --primary-hover: #4E342E;
+            --secondary: #FFC107; 
+            --accent: #81D4FA; 
+            --bg-color: #FFFDE7; 
+            --card-bg: #FFFFFF;
+            --text-main: var(--primary);
+            --text-muted: #8D6E63; 
+            --border-color: #D7CCC8; 
+            --like-color: #E53935; /* สีแดงสำหรับปุ่ม Like */
+            --transition-speed: 0.3s;
+        }
+
+        @keyframes fadeInSlideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        * { box-sizing: border-box; font-family: 'Prompt', sans-serif; }
+
+        body { 
+            background-color: var(--bg-color); 
+            margin: 0; padding: 0; padding-bottom: 90px;
+            color: var(--text-main);
+        }
+
+        /* Header */
+        .app-header {
+            display: flex; justify-content: center; align-items: center;
+            padding: 16px 24px; background: var(--card-bg);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            position: sticky; top: 0; z-index: 10;
+        }
+        .header-title { font-size: 18px; font-weight: 600; margin: 0; color: var(--primary); }
+
+        .container { padding: 16px; max-width: 600px; margin: 0 auto; }
+
+        /* Create Post Box */
+        .create-post-card {
+            background: var(--card-bg); border-radius: 20px; padding: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid var(--border-color);
+            margin-bottom: 24px; opacity: 0; animation: fadeInSlideUp 0.5s ease-out forwards;
+        }
+        .create-post-header { display: flex; gap: 12px; align-items: flex-start; }
+        .user-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); }
+        .post-input {
+            flex: 1; border: none; background: #FAFAFA; border-radius: 12px;
+            padding: 12px; font-size: 14px; resize: none; color: var(--text-main);
+        }
+        .post-input:focus { outline: none; background: #F5F5F5; }
+        .create-post-actions {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-color);
+        }
+        .btn-action-icon {
+            background: none; border: none; font-size: 18px; color: var(--text-muted);
+            cursor: pointer; display: flex; align-items: center; gap: 6px; font-weight: 600;
+        }
+        .btn-action-icon:hover { color: var(--primary); }
+        .btn-post {
+            background: var(--secondary); color: var(--primary); border: none;
+            padding: 8px 20px; border-radius: 20px; font-weight: 600; cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-post:hover { background: #FFB300; }
+
+        /* Post Feed */
+        .feed { display: flex; flex-direction: column; gap: 16px; }
+        .post-card {
+            background: var(--card-bg); border-radius: 20px; padding: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid transparent;
+            opacity: 0; animation: fadeInSlideUp 0.5s ease-out forwards;
+        }
+        .post-card:nth-child(1) { animation-delay: 0.1s; }
+        .post-card:nth-child(2) { animation-delay: 0.2s; }
+
+        .post-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+        .post-user-info h3 { margin: 0; font-size: 15px; font-weight: 600; }
+        .post-time { margin: 0; font-size: 12px; color: var(--text-muted); }
+        
+        .post-content p { margin: 0 0 12px 0; font-size: 14px; line-height: 1.5; }
+        .post-image { width: 100%; border-radius: 12px; margin-bottom: 12px; object-fit: cover; max-height: 300px; }
+
+        .post-stats { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); margin-bottom: 12px; }
+        
+        .post-actions {
+            display: flex; gap: 16px; padding-top: 12px; border-top: 1px solid var(--border-color);
+        }
+        .btn-interact {
+            flex: 1; background: none; border: none; font-size: 14px; font-weight: 600;
+            color: var(--text-muted); cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px;
+            padding: 8px; border-radius: 8px; transition: background 0.2s, color 0.2s;
+        }
+        .btn-interact:hover { background: #F5F5F5; }
+        .btn-interact.liked { color: var(--like-color); }
+
+        /* Comments Section */
+        .comments-section { display: none; margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--border-color); }
+        .comments-section.show { display: block; }
+        .comment-item { display: flex; gap: 10px; margin-bottom: 12px; }
+        .comment-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
+        .comment-box { background: #FAFAFA; padding: 10px 14px; border-radius: 16px; border-radius: 4px 16px 16px 16px; flex: 1; }
+        .comment-name { font-size: 13px; font-weight: 600; margin: 0 0 4px 0; }
+        .comment-text { font-size: 13px; margin: 0; }
+        
+        /* Bottom Nav */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: var(--card-bg); padding: 12px 0; box-shadow: 0 -4px 12px rgba(0,0,0,0.03);
+            display: flex; justify-content: space-around; border-top: 1px solid var(--border-color);
+            padding-bottom: calc(12px + env(safe-area-inset-bottom)); z-index: 10;
+        }
+        .nav-item {
+            text-align: center; color: var(--text-muted); text-decoration: none; 
+            font-size: 12px; display: flex; flex-direction: column; align-items: center; 
+            gap: 4px; transition: color 0.2s; position: relative; padding: 0 24px;
+        }
+        .nav-item:hover { color: var(--text-main); }
+        .nav-item.active { color: var(--primary); font-weight: 600; }
+        .nav-item.active::after {
+            content: ''; position: absolute; top: -13px; left: 50%; transform: translateX(-50%);
+            width: 40px; height: 3px; background-color: var(--primary); border-radius: 0 0 4px 4px;
+        }
+        .nav-icon { font-size: 22px; transition: transform 0.2s; }
+        .nav-item:hover .nav-icon { transform: scale(1.1); }
+    </style>
+</head>
+<body>
+
+    <header class="app-header">
+        <h1 class="header-title">🐾 Pawney Community</h1>
+    </header>
+
+    <main class="container">
+        
+            <section class="create-post-card">
+            <div class="create-post-header">
+                <img src="pawneylogo.png" alt="โปรไฟล์ของคุณ" class="user-avatar">
+                <textarea class="post-input" rows="2" id="postInput" placeholder="วันนี้พาน้องๆ ไปเที่ยวไหนมา เล่าให้ฟังหน่อย..."></textarea>
+            </div>
+            <div class="create-post-actions">
+                <input type="file" id="postImageInput" accept="image/*" style="display: none;">
+                <button class="btn-action-icon" onclick="document.getElementById('postImageInput').click();">
+                    📷 <span>รูปภาพ</span>
+                </button>
+                <button class="btn-post" onclick="createPost()">โพสต์</button>
+            </div>
+        </section>
+
+        <section class="feed" id="postFeed">
+            
+            <article class="post-card">
+                <div class="post-header">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" alt="โปรไฟล์คุณแอน" class="user-avatar">
+                    <div class="post-user-info">
+                        <h3>คุณแอน & น้องมิลค์ 🐱</h3>
+                        <p class="post-time">2 ชั่วโมงที่แล้ว</p>
+                    </div>
+                </div>
+                <div class="post-content">
+                    <p>พาน้องมิลค์ขึ้นเครื่องบินครั้งแรกกับ Pawney บริการดีมาก น้องไม่เครียดเลยค่ะ หลับปุ๋ยตลอดทาง ✈️☁️</p>
+                    <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=600&q=80" alt="รูปน้องแมว" class="post-image">
+                </div>
+                <div class="post-stats">
+                    <span id="likeCount1">❤️ 24</span>
+                    <span>2 ความคิดเห็น</span>
+                </div>
+                <div class="post-actions">
+                    <button class="btn-interact" onclick="toggleLike(this, 'likeCount1')">🤍 ถูกใจ</button>
+                    <button class="btn-interact" onclick="toggleComments('commentSection1')">💬 คอมเมนต์</button>
+                </div>
+                <div class="comments-section" id="commentSection1">
+                    <div class="comment-item">
+                        <img src="https://accucut.com/cdn/shop/products/P1186.jpg?v=1751343049" alt="โปรไฟล์" class="comment-avatar">
+                        <div class="comment-box">
+                            <p class="comment-name">คุณ Pawney</p>
+                            <p class="comment-text">เก่งมากเลยลูก น่ารักสุดๆ ยินดีที่ได้ให้บริการนะคะ 🥰</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 8px; margin-top: 12px;">
+                        <input type="text" placeholder="เขียนความคิดเห็น..." style="flex: 1; border: 1px solid var(--border-color); border-radius: 20px; padding: 8px 12px; font-size: 13px;">
+                        <button class="btn-post" style="padding: 6px 12px; font-size: 12px;">ส่ง</button>
+                    </div>
+                </div>
+            </article>
+
+            <article class="post-card">
+                <div class="post-header">
+                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&q=80" alt="โปรไฟล์คุณบอย" class="user-avatar">
+                    <div class="post-user-info">
+                        <h3>คุณบอย & แก๊งคอร์กี้ 🐶</h3>
+                        <p class="post-time">5 ชั่วโมงที่แล้ว</p>
+                    </div>
+                </div>
+                <div class="post-content">
+                    <p>มีใครมีทริคแนะนำเวลาพาน้องหมานั่งรถไกลๆ ไหมครับ น้องชอบเมารถ 🚙🤢</p>
+                </div>
+                <div class="post-stats">
+                    <span id="likeCount2">❤️ 8</span>
+                    <span>0 ความคิดเห็น</span>
+                </div>
+                <div class="post-actions">
+                    <button class="btn-interact" onclick="toggleLike(this, 'likeCount2')">🤍 ถูกใจ</button>
+                    <button class="btn-interact" onclick="toggleComments('commentSection2')">💬 คอมเมนต์</button>
+                </div>
+                <div class="comments-section" id="commentSection2">
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" placeholder="แบ่งปันคำแนะนำของคุณ..." style="flex: 1; border: 1px solid var(--border-color); border-radius: 20px; padding: 8px 12px; font-size: 13px;">
+                        <button class="btn-post" style="padding: 6px 12px; font-size: 12px;">ส่ง</button>
+                    </div>
+                </div>
+            </article>
+
+        </section>
+    </main>
+
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item">
+            <span class="nav-icon">👤</span>
+            <span>Profile</span>
+        </a>
+        <a href="#" class="nav-item active" aria-current="page">
+            <span class="nav-icon">🌎</span>
+            <span>Community</span>
+        </a>
+    </nav>
+
+    <script>
+        // ฟังก์ชันกด Like
+        function toggleLike(btnElement, countId) {
+            const countElement = document.getElementById(countId);
+            // ดึงตัวเลขออกมาจากข้อความ "❤️ 24"
+            let currentLikes = parseInt(countElement.innerText.replace('❤️ ', ''));
+
+            if (btnElement.classList.contains('liked')) {
+                // เอา Like ออก
+                btnElement.classList.remove('liked');
+                btnElement.innerHTML = '🤍 ถูกใจ';
+                currentLikes -= 1;
+            } else {
+                // กด Like
+                btnElement.classList.add('liked');
+                btnElement.innerHTML = '❤️ ถูกใจแล้ว';
+                currentLikes += 1;
+            }
+            countElement.innerText = `❤️ ${currentLikes}`;
+        }
+
+        // ฟังก์ชันเปิด/ปิด คอมเมนต์
+        function toggleComments(sectionId) {
+            const section = document.getElementById(sectionId);
+            section.classList.toggle('show');
+        }
+
+// ฟังก์ชันจำลองการโพสต์ (แบบรองรับรูปภาพ)
+        function createPost() {
+            const input = document.getElementById('postInput');
+            const fileInput = document.getElementById('postImageInput');
+            const text = input.value.trim();
+            
+            if (!text && !fileInput.files[0]) {
+                alert('กรุณาพิมพ์ข้อความหรือเลือกรูปภาพก่อนโพสต์ครับ');
+                return;
+            }
+
+            // สร้าง HTML สำหรับโพสต์ใหม่
+            const newPost = document.createElement('article');
+            newPost.className = 'post-card';
+            newPost.style.animation = 'fadeInSlideUp 0.5s ease-out forwards';
+
+            // ส่วนหัวโพสต์
+            let postHTML = `
+                <div class="post-header">
+                    <img src="https://accucut.com/cdn/shop/products/P1186.jpg?v=1751343049" alt="โปรไฟล์ของคุณ" class="user-avatar">
+                    <div class="post-user-info">
+                        <h3>คุณ Pawney</h3>
+                        <p class="post-time">เมื่อสักครู่</p>
+                    </div>
+                </div>
+                <div class="post-content">
+                    ${text ? `<p>${text}</p>` : ''}
+            `;
+
+            // ส่วนจัดการรูปภาพ (ถ้ามี)
+            if (fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    // เมื่อโหลดรูปเสร็จ ให้สร้าง img tag และใส่ไว้ในโพสต์
+                    postHTML += `<img src="${e.target.result}" alt="รูปโพสต์" class="post-image">`;
+                    // ปิดส่วนเนื้อหาและใส่ส่วนจัดการ
+                    finalizeAndPost(postHTML);
+                }
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                // ถ้าไม่มีรูป ให้ปิดส่วนเนื้อหาและใส่ส่วนจัดการทันที
+                finalizeAndPost(postHTML);
+            }
+        }
+
+        // ฟังก์ชันเสริมเพื่อปิด HTML โพสต์และใส่ลงในฟีด
+        function finalizeAndPost(postHTML) {
+            const input = document.getElementById('postInput');
+            const fileInput = document.getElementById('postImageInput');
+            const feed = document.getElementById('postFeed');
+            const uniqueLikeId = 'likeCount_' + Math.floor(Math.random() * 10000);
+
+            // ใส่ส่วนจัดการและคอมเมนต์
+            postHTML += `
+                </div>
+                <div class="post-stats">
+                    <span id="${uniqueLikeId}">❤️ 0</span>
+                    <span>0 ความคิดเห็น</span>
+                </div>
+                <div class="post-actions">
+                    <button class="btn-interact" onclick="toggleLike(this, '${uniqueLikeId}')">🤍 ถูกใจ</button>
+                    <button class="btn-interact">💬 คอมเมนต์</button>
+                </div>
+            `;
+
+            // สร้าง element และใส่ลงฟีด
+            const newPost = document.createElement('article');
+            newPost.className = 'post-card';
+            newPost.style.animation = 'fadeInSlideUp 0.5s ease-out forwards';
+            newPost.innerHTML = postHTML;
+            feed.insertAdjacentElement('afterbegin', newPost);
+            
+            // เคลียร์ค่า
+            input.value = '';
+            fileInput.value = ''; // สำคัญ: เคลียร์ค่าใน input file ด้วย
+        }
+    </script>
+
+</body>
+</html>
